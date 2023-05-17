@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Right DTF
+// @name         Right DTF Vision
 // @namespace    http://tampermonkey.net/
 // @updateURL   https://github.com/ogampot/Right-DTF/raw/master/Right-DTF-Vision/Right_DTF.user.js
 // @downloadURL https://github.com/ogampot/Right-DTF/raw/master/Right-DTF-Vision/Right_DTF.user.js
-// @version      0.1.1
+// @version      0.1.2
 // @description  The true DTF vision for all men!
 // @author       ogampot
 // @match        https://dtf.ru/*
