@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Right DTF Vision
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.3.1
 // @author       ogampot | https://t.me/ogampotik | https://dtf.ru/u/15036-ogampot-fanat-static-dress
 // @description  Истинный вид дтф.
 // @match        https://dtf.ru/*
@@ -42,6 +42,8 @@
         var link = document.getElementById("topLayerYourImgLink");
         if((link.value != null || link.value != "") && img.src == link.value)
         {
+            document.getElementById("topLayerRadio0").checked = true;
+            document.getElementById("topLayerRadio0").checked = false;
             document.getElementsByClassName("ui-radio-button ui-radio-button--checked")[0].setAttribute("class", "ui-radio-button");
         }
         else
