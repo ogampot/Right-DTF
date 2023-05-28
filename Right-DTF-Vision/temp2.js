@@ -3,66 +3,14 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.3
 // @author       ogampot | https://t.me/ogampotik | https://dtf.ru/u/15036-ogampot-fanat-static-dress
-// @description  То, что должно быть перед глазами у каждого дтфера.
+// @description  Истинный вид дтф.
 // @match        https://dtf.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=dtf.ru
 // ==/UserScript==
 
 (function() {
-    function layerListButton() {
-        var div = document.getElementById("topLayerListDiv");
-        if(div == null) {
-            div = document.getElementById("topLayerListDivHidden");
-            div.id = "topLayerListDiv";
-        }
-        else {
-            div.id = "topLayerListDivHidden";
-        }
-    }
+    function openNewTab(evt, tabId) {
 
-    function changeLayerImg()
-    {
-        var img = document.getElementById("topLayerImg");
-        img.src = document.querySelector('input[name="layerImg"]:checked').value;
-    }
-
-    function changeLayerImgByLink()
-    {
-        var img = document.getElementById("topLayerImg");
-        img.src = document.getElementById("topLayerYourImgLink").value;
-        document.getElementsByClassName("ui-radio-button ui-radio-button--checked").class = "ui-radio-button";
-    }
-
-    function clampOpacity(value)
-    {
-        return Math.min(Math.max(value.value, value.min), value.max);
-    }
-
-    function changeLayerImgOpacity()
-    {
-        var img = document.getElementById("topLayerImg");
-        img.setAttribute("style", "opacity: " + clampOpacity(document.getElementById("topLayerOpacityValue").value) + "%;");
-    }
-
-    function setStorage() {
-        localStorage.setItem("opacityValuer", document.getElementById("topLayerOpacityValue".value));
-        localStorage.setItem("link", document.getElementById("topLayerImg").src);
-        localStorage.setItem("linkInput", document.getElementById("topLayerYourImgLink").value);
-        localStorage.setItem("check", document.querySelector('input[name="layerImg"]:checked').id);
-    }
-
-    function setValues() {
-        var currentOpacity = localStorage.getItem('opacityValuer');
-        var currentLink = localStorage.getItem('link');
-        var currentCheck = localStorage.getItem('check');
-
-        if(currentOpacity == null) currentOpacity = 100;
-        if(currentLink == null) currentLink = "";
-        if(currentCheck == null) currentCheck == "topLayerRadio0";
-
-        if(document.getElementById('topLayerOpacityValue') != null) document.getElementById('topLayerOpacityValue').value = currentOpacity;
-        if(document.getElementById('topLayerYourImgLink') != null) document.getElementById('topLayerYourImgLink').value;
-        if(document.getElementById(currentCheck) != null) document.getElementById(currentCheck).checked = true;
     }
 
     let layers = [
@@ -109,7 +57,7 @@
     }
 
     function layerListButton() {
-        var div = document.getElementById("topLayerListDiv");
+        var div = document.getElementById("topLayerPanelDiv");
         if(div != null) {
             if(div.getAttribute("style") == "opacity: 100%; pointer-events: all;")
             {
@@ -151,6 +99,14 @@
         img.setAttribute("style", "opacity: " + document.getElementById("topLayerOpacityValue").value + "%;");
         setStorage();
     }
+    function opacityValueChangeByButtons(n) {
+        var value = document.getElementById("topLayerOpacityValue");
+        value.value = parseInt(value.value) + n;
+        value.value = Math.min(Math.max(value.value, value.min), value.max);
+        var img = document.getElementById("topLayerImg");
+        img.setAttribute("style", "opacity: " + document.getElementById("topLayerOpacityValue").value + "%;");
+        setStorage();
+    }
 
     function setStorage() {
         localStorage.setItem("opacityValue", document.getElementById("topLayerOpacityValue").value);
@@ -158,7 +114,6 @@
         localStorage.setItem("linkInput", document.getElementById("topLayerYourImgLink").value);
         localStorage.setItem("check", document.querySelector('input[name="layerImg"]:checked').id);
     }
-
     function setValues() {
         var currentOpacity = localStorage.getItem('opacityValue');
         var currentLink = localStorage.getItem('link');
@@ -179,7 +134,7 @@
     }
 
     document.addEventListener('click', (e) => {
-        var divList = document.getElementById("topLayerListDiv");
+        var divList = document.getElementById("topLayerPanelDiv");
         var divButton = document.getElementById("topLayerButtonDiv");
         if(divList != null && divButton != null) {
             var withinBoundariesList = e.composedPath().includes(divList);
@@ -243,7 +198,7 @@
         transform: rotate(90deg);
         letter-spacing: -2px;
     }
-    #topLayerListDiv {
+    #topLayerPanelDiv {
         right: 30px;
         bottom: 90px;
         max-width: 1000px;
@@ -262,13 +217,28 @@
         border-radius: 10px;
         transition: 0.15s;
     }
+    #topLayerPanelDiv::-webkit-scrollbar {
+        width: 10px;
+    }
+    #topLayerPanelDiv::-webkit-scrollbar-track {
+        background: #d9f5ff;
+        border: white 3px solid;
+        border-radius: 10px;
+    }
+    #topLayerPanelDiv::-webkit-scrollbar-thumb {
+        background: #66d6ff;
+        border-radius: 6px;
+    }
     #topLayerListElementDiv {
         padding: 5px;
+        display: flex;
+        align-items: center;
     }
     #topLayerListElementLabelUnhoverable {
         font-size: 12pt;
         font-weight: bold;
         font-family: "Monaco", monospace;
+        margin-right: 10px;
     }
     #topLayerListElementLabel {
         margin-left: 10px;
@@ -286,6 +256,31 @@
         font-size: 12pt;
         font-weight: bold;
         font-family: "Monaco", monospace;
+    }
+    #topLayerOpacityValue::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+    }
+    #topLayerOpacityButtonsDiv {
+        width: 50px;
+        height: 25px;
+        margin-left: 5px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: white;
+        border: #66d6ff 2px solid;
+        border-radius: 5px;
+        font-size: 15pt;
+        font-weight: bold;
+        font-family: "Monaco", monospace;
+    }
+    #topLayerOpacityValueButtons {
+        width: 25px;
+        border-radius: 2px;
+        outline: 1px solid #66d6ff;
+    }
+    #topLayerOpacityValueButtons:active {
+        background-color: #66d6ff;
     }
     #topLayerYourImgLink {
         background-color: #d9f5ff;
@@ -305,7 +300,62 @@
         font-size: 12pt;
         font-weight: bold;
         font-family: "Monaco", monospace;
-    }`
+    }
+    #topLayerYourImgOkButton:active {
+        background-color: #66d6ff;
+    }
+    #topLayerDefaultLayersList {
+        max-height: 100px;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: #d9f5ff 4px solid;
+        border-radius: 10px;
+    }
+    #topLayerDefaultLayersList::-webkit-scrollbar {
+        width: 10px;
+    }
+    #topLayerDefaultLayersList::-webkit-scrollbar-track {
+        background: #d9f5ff;
+        border: white 3px solid;
+        border-radius: 10px;
+    }
+    #topLayerDefaultLayersList::-webkit-scrollbar-thumb {
+        background: #66d6ff;
+        border-radius: 6px;
+    }
+    #topLayerSeparator {
+        border-top: #d9f5ff 3px dashed;
+        border-radius: 10px;
+        margin: 10px 0px 10px 0px;
+    }
+    #topLayerPanelTabsDiv {
+        margin-bottom: 5px;
+        border-bottom: 3px solid #d9f5ff;
+    }
+    #topLayerTab {
+        padding: 5px 10px;
+        background-color: #d9f5ff78;
+        font-size: 12pt;
+        font-weight: bold;
+        font-family: "Monaco", monospace;
+    }
+    #topLayerTab:hover {
+        /*background-color: #d9f5ff;
+        border-top: #66d6ff solid 1px;
+        border-right: #66d6ff solid 1px;
+        border-left: #66d6ff solid 1px;*/
+        box-shadow: inset #d9f5ff 0px 0px 8px 2px;
+    }
+    #topLayerTabActive {
+        padding: 5px 10px;
+        background-color: #d9f5ff;
+        font-size: 12pt;
+        font-weight: bold;
+        font-family: "Monaco", monospace;
+    }
+    `;
 
     head.appendChild(style);
 
@@ -336,9 +386,27 @@
     divButton.appendChild(buttonSwitch);
     divGeneral.appendChild(divButton);
 
-    var divLayersList = document.createElement('div');
-    divLayersList.id = 'topLayerListDiv';
-    divLayersList.setAttribute("style", "opacity: 0%; pointer-events: none;");
+    var divLayersPanel = document.createElement('div');
+    divLayersPanel.id = 'topLayerPanelDiv';
+    divLayersPanel.setAttribute("style", "opacity: 0%; pointer-events: none;");
+
+    var divLayersPanelTabs = document.createElement('div');
+    divLayersPanelTabs.id = 'topLayerPanelTabsDiv';
+
+    var buttonTab1 = document.createElement('button');
+    buttonTab1.id = 'topLayerTab';
+    buttonTab1.innerHTML = 'Tab 1';
+    buttonTab1.setAttribute("onclick", "");
+
+    var buttonTab2 = document.createElement('button');
+    buttonTab2.id = 'topLayerTab';
+    buttonTab2.innerHTML = 'Tab 2';
+    buttonTab2.setAttribute("onclick", "");
+
+    divLayersPanelTabs.appendChild(buttonTab1);
+    divLayersPanelTabs.appendChild(buttonTab2);
+
+    divLayersPanel.appendChild(divLayersPanelTabs);
 
     var divListElementO = document.createElement('div');
     divListElementO.id = 'topLayerListElementDiv';
@@ -346,7 +414,7 @@
     var labelOpacity = document.createElement('label');
     labelOpacity.id = 'topLayerListElementLabelUnhoverable';
     labelOpacity.setAttribute("for", "layerOpacity");
-    labelOpacity.innerHTML = 'IMG Opacity %: ';
+    labelOpacity.innerHTML = 'Image Opacity %: ';
 
     var opacityValueInput = document.createElement('input');
     opacityValueInput.type = 'number';
@@ -354,16 +422,31 @@
     opacityValueInput.name = 'layerOpacity';
     opacityValueInput.min = 0;
     opacityValueInput.max = 100;
-    opacityValueInput.step = 10;
     opacityValueInput.setAttribute("value", "100");
-    opacityValueInput.setAttribute("onchange", "changeLayerImgOpacity()");
+
+    var divOpacityButtons = document.createElement('div');
+    divOpacityButtons.id = 'topLayerOpacityButtonsDiv';
+
+    var buttonPlus = document.createElement('button');
+    buttonPlus.id = 'topLayerOpacityValueButtons';
+    buttonPlus.innerHTML = '+';
+    buttonPlus.setAttribute("onclick", "opacityValueChangeByButtons(10)");
+
+    var buttonMinus = document.createElement('button');
+    buttonMinus.id = 'topLayerOpacityValueButtons';
+    buttonMinus.innerHTML = '-';
+    buttonMinus.setAttribute("onclick", "opacityValueChangeByButtons(-10)");
+
+    divOpacityButtons.appendChild(buttonPlus);
+    divOpacityButtons.appendChild(buttonMinus);
 
     divListElementO.appendChild(labelOpacity);
     divListElementO.appendChild(opacityValueInput);
+    divListElementO.appendChild(divOpacityButtons);
 
-    divLayersList.appendChild(divListElementO);
+    divLayersPanel.appendChild(divListElementO);
 
-    divLayersList.innerHTML += "</br>";
+    divLayersPanel.innerHTML += '<div id="topLayerSeparator"></div>';
 
     var divListElementL = document.createElement('div');
     divListElementL.id = 'topLayerListElementDiv';
@@ -371,7 +454,7 @@
     var labelYourImg = document.createElement('label');
     labelYourImg.id = 'topLayerListElementLabelUnhoverable';
     labelYourImg.setAttribute("for", "imgLink");
-    labelYourImg.innerHTML = 'Your IMG-link: ';
+    labelYourImg.innerHTML = 'Your Image-link: ';
 
     var yourImgLink = document.createElement('input');
     yourImgLink.type = 'text';
@@ -387,20 +470,23 @@
     divListElementL.appendChild(yourImgLink);
     divListElementL.appendChild(buttonOk);
 
-    divLayersList.appendChild(divListElementL);
+    divLayersPanel.appendChild(divListElementL);
 
-    divLayersList.innerHTML += "</br>";
+    divLayersPanel.innerHTML += '<div id="topLayerSeparator"></div>';
 
     var divListElementT = document.createElement('div');
     divListElementT.id = 'topLayerListElementDiv';
 
     var labelList = document.createElement('label');
     labelList.id = 'topLayerListElementLabelUnhoverable';
-    labelList.innerHTML = 'IMG Sample: ';
+    labelList.innerHTML = 'Image Sample: ';
 
     divListElementT.appendChild(labelList);
 
-    divLayersList.appendChild(divListElementT);
+    divLayersPanel.appendChild(divListElementT);
+
+    var divListDefaultLayers = document.createElement('div');
+    divListDefaultLayers.id = 'topLayerDefaultLayersList';
 
     for(var i = 0; i < layers.length; i++)
     {
@@ -423,10 +509,12 @@
         divListElement.appendChild(radioLayer);
         divListElement.appendChild(label);
 
-        divLayersList.appendChild(divListElement);
+        divListDefaultLayers.appendChild(divListElement);
     }
 
-    divGeneral.appendChild(divLayersList);
+    divLayersPanel.appendChild(divListDefaultLayers);
+
+    divGeneral.appendChild(divLayersPanel);
 
     var bodyScript = document.createElement('script');
     bodyScript.id = 'topLayerBodyScript';
